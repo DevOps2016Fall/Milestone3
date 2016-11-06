@@ -20,7 +20,7 @@ app.use(function(req, res, next)
 {
 	console.log(req.method, req.url);
   client.lpush('_recent0',req.url);
-  console.log('Time:', Date.now());
+  // console.log('Time:', Date.now());
 	next(); // Passing the request to the next handler in the stack.
 });
 
