@@ -95,7 +95,13 @@ setTimeout(function(){
 	fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   console.log("DigitalOcean: done!");
   if(serverName == "redis"){
-  	fs.appendFile('redis_server.json','redis_ip:'+publicIP+', redis_port:6379')
+  	fs.writeFile('../app/redis_server.json','{\"redis_ip\":\"'+publicIP+'\", \"redis_port\":6379}')
+  }
+  if(serverName == "product"){
+  	fs.appendFile('../app/product_server.json','{\"product_ip\":\"'+publicIP+'\", \"product_port\":3000}')
+  }
+  if(serverName == "staging"){
+  	fs.appendFile('../app/product_server.json','{\"stage_ip\":\"'+publicIP+'\", \"stage_port\":3000}')
   }
   });
 },20000);
