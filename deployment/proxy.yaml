@@ -56,8 +56,8 @@
   - name: Push image
     command: docker push weifoo/deploy_app:proxy
 
-  - name: Stop the proxy
-    command: docker rm -f proxy
+  # - name: Stop the proxy
+  #   command: docker rm -f proxy
 
   - name: Deploy proxy app
     docker:

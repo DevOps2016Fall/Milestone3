@@ -22,7 +22,7 @@ var infrastructure =
       if (req.url == "/spawn")
       {
         START_PORT +=1;
-        exec('forever start main.js ' + START_PORT,function(err,out,code)
+        exec('forever start app.js ' + START_PORT,function(err,out,code)
         {
           console.log("attempting to launch "+ START_PORT.toString() +" server");
           if (err instanceof Error)
