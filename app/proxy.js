@@ -39,7 +39,6 @@ var infrastructure =
     {
       if (req.url == "/spawn")
       {
-        START_PORT +=1;
         exec('node provision_newProductServer.js ' + START_PORT,function(err,out,code)
         {
           var newProductServer
@@ -51,7 +50,7 @@ var infrastructure =
             console.error( err );
           }
           client.lrange("productServersList", 0, 1, function(err, value){
-            value.forEach(function{
+            value.forEach(function(item){
               newProductServer = item.toString();
             });
           });
@@ -76,7 +75,7 @@ var infrastructure =
       }
       if(req.url == "/")
       {
-        client.rpoplpush("serversList", "serversList", function(err, TARGET){
+        client.rpoplpush("productServersList", "productServersList", function(err, TARGET){
         console.log("Proxy now pointing to server:" + TARGET);
         proxy.web( req, res, {target: TARGET } );
         });
