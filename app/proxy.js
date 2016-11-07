@@ -3,12 +3,12 @@ var httpProxy = require('http-proxy');
 var exec = require('child_process').exec;
 var request = require("request");
 var redis = require('redis');
-var client = redis.createClient(6379, '127.0.0.1', {});
+var client = redis.createClient(process.env.REDIS_PORT_6379_TCP_PORT,process.env.REDIS_PORT_6379_TCP_ADDR, {});
 
 
 
-var TARGET = 'http://127.0.0.1:4000';
-var START_PORT=4000;
+var TARGET = 'http://127.0.0.1:3000';
+var START_PORT=3000;
 
 var infrastructure =
 {
@@ -70,7 +70,7 @@ var infrastructure =
       }
 
     });
-    server.listen(8081);
+    server.listen(8080);
 
     exec('forever start main.js 4000', function(err, out, code)
     {
