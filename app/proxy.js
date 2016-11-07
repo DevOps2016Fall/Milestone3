@@ -1,5 +1,6 @@
 var http      = require('http');
 var httpProxy = require('http-proxy');
+var fs = require('fs');
 var exec = require('child_process').exec;
 var request = require("request");
 var redis = require('redis');
@@ -22,7 +23,7 @@ var product = fs.readFileSync('./product_server.json');
 var productServer = JSON.parse(product);
 var productIp = productServer.product_ip;
 var productPort = productServer.product_port;
-var TARGET = "http://"+product_ip+":"+productPort;
+var TARGET = "http://"+productIp+":"+productPort;
 
 
 var START_PORT=3000;
@@ -39,8 +40,9 @@ var infrastructure =
       if (req.url == "/spawn")
       {
         START_PORT +=1;
-        exec('forever start app.js ' + START_PORT,function(err,out,code)
+        exec('node provision_newProductServer.js ' + START_PORT,function(err,out,code)
         {
+          var newProductServer
           console.log("attempting to launch "+ START_PORT.toString() +" server");
           if (err instanceof Error)
             throw err;
@@ -48,10 +50,14 @@ var infrastructure =
           {
             console.error( err );
           }
-          client.lpush("serversList","http://localhost:"+START_PORT.toString()+"/");
+          client.lrange("productServersList", 0, 1, function(err, value){
+            value.forEach(function{
+              newProductServer = item.toString();
+            });
+          });
         });
         res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end("Create a  server : "+ "http://localhost:"+START_PORT.toString());
+        res.end("Create a  server : "+ newProductServer);
       }
       if(req.url == "/destroy")
       {
@@ -87,20 +93,20 @@ var infrastructure =
       }
 
     });
-    server.listen(8080);
+    server.listen(8081);
 
-    exec('forever start main.js 4000', function(err, out, code)
-    {
-      client.del("serversList");
-      client.lpush("serversList","http://localhost:4000/");
-      console.log("attempting to launch  4000 server");
-      if (err instanceof Error)
-            throw err;
-      if( err )
-      {
-        console.error( err );
-      }
-    });
+    // exec('forever start main.js 4000', function(err, out, code)
+    // {
+    //   client.del("serversList");
+    //   client.lpush("serversList","http://localhost:4000/");
+    //   console.log("attempting to launch  4000 server");
+    //   if (err instanceof Error)
+    //         throw err;
+    //   if( err )
+    //   {
+    //     console.error( err );
+    //   }
+    // });
   },
 
   teardown: function()
