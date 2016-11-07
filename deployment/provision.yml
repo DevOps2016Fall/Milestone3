@@ -1,0 +1,22 @@
+---
+- hosts: node0
+  vars_files:
+    - var.yml
+  become: yes
+  roles:
+    - angstwad.docker_ubuntu # firstly, ansible-galaxy install angstwad.docker_ubuntu
+  tasks:
+  - name: Install required system packages.
+    become: yes
+    apt: pkg={{ item }} state=installed update-cache=yes
+    with_items: "{{ system_packages }}"
+  - name: Install required pip packages.
+    easy_install: name={{ item }}
+    with_items: "{{ python_packages }}"
+  - name : Install curl
+    apt: pkg=curl state=installed update_cache=true
+  - name: install docker-py
+    command: pip install docker-py==1.7.0
+
+
+

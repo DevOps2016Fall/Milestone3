@@ -1,0 +1,9 @@
+---
+system_packages:
+  - build-essential
+  - git
+  - python-dev
+  - python-setuptools
+  - maven
+python_packages:
+  - pip
