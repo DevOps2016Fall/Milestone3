@@ -18,7 +18,7 @@ catch (err) {
     console.log(err);
 }
 
-var client = redis.createClient(redis_port,redis_ip, {});
+var redisClient = redis.createClient(redis_port,redis_ip, {});
 
 var serverName = args[0]
 var config = {};
@@ -110,7 +110,7 @@ setTimeout(function(){
   console.log("A new product server is provisioned: done!");
   });
   if(serverName == "product"){
-  	client.lpush("productServersList","http://"+ip_address+":3000/");
+  	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
   }
 },20000);
 
