@@ -46,7 +46,7 @@
       email: wfu@ncsu.edu
 
   - name: Build image
-    command: docker build -t proxy .
+    command: docker build --no-cache -t  proxy .
     args: 
       chdir : ~/proxy
   
