@@ -92,7 +92,7 @@ setTimeout(function(){
 	var data = response.body;
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
-	fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+	fs.appendFile('inventory_scale', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   console.log("DigitalOcean: done!");
   });
 },20000);
