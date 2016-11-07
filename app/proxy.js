@@ -3,11 +3,28 @@ var httpProxy = require('http-proxy');
 var exec = require('child_process').exec;
 var request = require("request");
 var redis = require('redis');
-var client = redis.createClient(process.env.REDIS_PORT_6379_TCP_PORT,process.env.REDIS_PORT_6379_TCP_ADDR, {});
+
+var redis_ip, redis_port
+var redis_info = fs.readFileSync('./redis_server.json');
+try {
+    redisServer = JSON.parse(redis_info);
+    redis_ip = redisServer.redis_ip;
+    redis_port = redisServer.redis_port;
+}
+catch (err) {
+    console.log('parsing redis_server.json failed!');
+    console.log(err);
+}
+
+var client = redis.createClient(redis_port,redis_ip, {});
+
+var product = fs.readFileSync('./product_server.json');
+var productServer = JSON.parse(product);
+var productIp = productServer.product_ip;
+var productPort = productServer.product_port;
+var TARGET = "http://"+product_ip+":"+productPort;
 
 
-
-var TARGET = 'http://127.0.0.1:3000';
 var START_PORT=3000;
 
 var infrastructure =
