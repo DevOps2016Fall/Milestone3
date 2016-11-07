@@ -23,7 +23,7 @@ var client =
 {
 	getSSHKeyID:function(onResponse)
 	{
-		needle.get("https://api.digitalocean.com/v2/account/keys/6e:a5:95:7d:ba:9b:e6:fd:d1:65:c2:1b:21:21:ef:7e",{headers:headers},onResponse)
+		needle.get("https://api.digitalocean.com/v2/account/keys/4d:83:e3:c6:40:65:6b:04:b2:b9:58:89:6f:2c:e4:8a",{headers:headers},onResponse)
   },
 	retrieveDroplet:function(dropletId,onResponse)
 	{
@@ -75,7 +75,7 @@ var client =
 var name = "UnityId-"+os.hostname();
 var region = "nyc2"; // Fill one in from #1
 var image = "ubuntu-14-04-x64"; // Fill one in from #2
-var sshID = 3374967; // get it by retrieve
+var sshID = 4485896; // get it by retrieve
 var dropletId = null;
 client.createDroplet(name, region, image, sshID,function(err, resp, body)
 {
