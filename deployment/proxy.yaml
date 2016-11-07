@@ -46,12 +46,12 @@
       email: wfu@ncsu.edu
 
   - name: Build image
-    command: build -t proxy .
+    command: docker build -t proxy .
     args: 
       chdir : ~/proxy
   
   - name: Tag image
-    command: docker tag -f proxy weifoo/deploy_app:proxy
+    command: docker tag proxy weifoo/deploy_app:proxy
   
   - name: Push image
     command: docker push weifoo/deploy_app:proxy

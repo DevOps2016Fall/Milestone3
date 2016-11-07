@@ -13,6 +13,7 @@ RUN npm install n -g
 RUN n 0.10.33
 RUN cd /app; npm install
 RUN npm install http-server -g
+RUN npm install forever -g
 EXPOSE 3000
 EXPOSE 8080
 WORKDIR /app
