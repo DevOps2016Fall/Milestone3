@@ -1,0 +1,1 @@
+node0 ansible_ssh_host=162.243.89.150 ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa
