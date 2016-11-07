@@ -26,7 +26,7 @@ describe('App Server ', function() {
     chai.request(server)
     .get('/feature')
     .end(function(err,res){
-      res.should.have.status(200);
+      res.should.have.status(404);
       done();
     });
   });
