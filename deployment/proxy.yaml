@@ -1,74 +1,77 @@
 ---
-- hosts: node0
+- hosts: proxy
   become: yes
   tasks:
-  - name: mkdir proxy folder
+  - name: Mkdir proxy folder
     file: state=directory path=~/proxy
 
   - stat: path=~/proxy/Milestone3
     register: m3_repo_exist
 
-  - name: clone the whole repo 
+  - name: Clone the whole repo 
     command: git clone https://github.com/DevOps2016Fall/Milestone3.git
     when: m3_repo_exist.stat.exists == False
     args:
       chdir: ~/proxy
 
-  - name: pull new commits
+  - name: Pull new commits
     command: git pull origin master
     when: m3_repo_exist.stat.exists == True
     args:
        chdir: ~/proxy/Milestone3
 
-  ## build redis container
-  - name: Redis container
-    docker:
-      name: myredis
-      image: redis
-      command: redis-server --appendonly yes
-      state: started
-      expose:
-        - 6379
-      docker_api_version: 1.18
-    sudo: yes
+  - name: Linking nodejs to run as "node"
+    command: ln -s /usr/bin/nodejs /usr/bin/node
+
+  # ## build redis container
+  # - name: Redis container
+  #   docker:
+  #     name: myredis
+  #     image: redis
+  #     command: redis-server --appendonly yes
+  #     state: started
+  #     expose:
+  #       - 6379
+  #     docker_api_version: 1.18
+  #   sudo: yes
   
-  ## upload Dockerfile
+  # ## upload Dockerfile
 
-  - name: upload Dockerfile for buidling
-    copy: src=Dockerfile_proxy dest=~/proxy/Dockerfile
+  # - name: upload Dockerfile for buidling
+  #   copy: src=Dockerfile_proxy dest=~/proxy/Dockerfile
 
 
-  ## Build docker image
-  - name: Log into DockerHub
-    docker_login:
-      username: weifoo
-      password: WOxing1987!
-      email: wfu@ncsu.edu
+  # ## Build docker image
+  # - name: Log into DockerHub
+  #   docker_login:
+  #     username: weifoo
+  #     password: WOxing1987!
+  #     email: wfu@ncsu.edu
 
-  - name: Build image
-    command: docker build --no-cache -t  proxy .
-    args: 
-      chdir : ~/proxy
+  # - name: Build image
+  #   command: docker build --no-cache -t  proxy .
+  #   args: 
+  #     chdir : ~/proxy
   
-  - name: Tag image
-    command: docker tag proxy weifoo/deploy_app:proxy
+  # - name: Tag image
+  #   command: docker tag proxy weifoo/deploy_app:proxy
   
-  - name: Push image
-    command: docker push weifoo/deploy_app:proxy
+  # - name: Push image
+  #   command: docker push weifoo/deploy_app:proxy
 
-  # - name: Stop the proxy
-  #   command: docker rm -f proxy
+  # # - name: Stop the proxy
+  # #   command: docker rm -f proxy
 
-  - name: Deploy proxy app
-    docker:
-      name: proxy
-      image: weifoo/deploy_app:proxy
-      pull: always
-      links:
-        - "myredis:redis"
-      ports:
-        - 8080:8080
-        - 3000:3000
+  # - name: Deploy proxy app
+  #   docker:
+  #     name: proxy
+  #     image: weifoo/deploy_app:proxy
+  #     pull: always
+  #     links:
+  #       - "myredis:redis"
+  #     ports:
+  #       - 8080:8080
+  #       - 3000:3000
 
 
 

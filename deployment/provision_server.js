@@ -1,7 +1,12 @@
 var needle = require("needle");
 var os   = require("os");
 var fs = require("fs");
+var args = process.argv.slice(2);
+if(args.length == 0){
+  throw "Please pass serverName!";
+}
 
+var serverName = args[0]
 var config = {};
 config.token = "a40b9e915e57df76e39a1eab52a4495e327f445d7d52a00c6e9a059ca0574466";// my own token
 
@@ -30,7 +35,7 @@ var client =
 		{
 			"name": dropletName,
 			"region":region,
-			"size":"1gb",
+			"size":"512mb",
 			"image":imageName,
 			// Id to ssh_key already associated with account.
 			"ssh_keys":[sshID],
@@ -87,64 +92,11 @@ setTimeout(function(){
 	var data = response.body;
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
-	fs.appendFile('inventory','node0 ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+	fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   console.log("DigitalOcean: done!");
   });
 },20000);
 
 
 
-
-// //====================================
-// //
-// //   AWS provisioning
-// //
-// //====================================
-
-// console.log("Provisioning AWS server!!")
-// var AWS = require('aws-sdk');
-// AWS.config.region='us-west-2';
-// var credentials = new AWS.SharedIniFileCredentials();
-// AWS.config.credentials = credentials;
-
-// var ec2 = new AWS.EC2();
-// var params = {
-// 	ImageId:'ami-d732f0b7',// Ubuntu 14.04
-// 	InstanceType:'t2.micro',
-// 	KeyName:'lab2',
-// 	MinCount:1, 
-// 	MaxCount:1
-// }
-
-// //create the instance
-
-// ec2.runInstances(params, function(err,data){
-// 	if(err)
-// 	{
-// 		console.log("Could not create this instance",err); 
-// 		return; 
-// 	}
-// 	var instanceId = data.Instances[0].InstanceId;
-// 	console.log("Created instance",instanceId);
-// });
-
-// console.log("Waiting for AWS Server to initialize!!");
-// //get public ip
-
-// setTimeout(function(){
-// 		ec2.describeInstances(function(err,data){
-// 			if(err)
-// 			{
-// 				console.log("can't get instance info: ", err)
-// 			}
-// 			else
-// 			{
-// 				awsPublicIP = data.Reservations[0].Instances[0].PublicIpAddress;
-// 				console.log("AWS PublicIP: ",awsPublicIP);
-// 				fs.appendFile('inventory','node1 ansible_ssh_host='+awsPublicIP+' ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa\n')
-// 			  console.log("AWS: done!");
-// 			}
-// 		});
-
-// 	},90000);
 
