@@ -94,6 +94,9 @@ setTimeout(function(){
   console.log("DigitalOcean PublicIP: "+ publicIP);
 	fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   console.log("DigitalOcean: done!");
+  if(serverName == "redis"){
+  	fs.appendFile('redis_server.json','redis_ip:'+publicIP+', redis_port:6379')
+  }
   });
 },20000);
 
