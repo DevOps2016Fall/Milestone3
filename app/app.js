@@ -5,10 +5,22 @@ var fs      = require('fs');
 var http      = require('http');
 var httpProxy = require('http-proxy');
 var app = express();
-var client = redis.createClient(process.env.REDIS_PORT_6379_TCP_PORT,process.env.REDIS_PORT_6379_TCP_ADDR, {});
+
+var redis_ip, redis_port
+var redis_info = fs.readFileSync('./redis_server.json');
+try {
+    redisServer = JSON.parse(redis_info);
+    redis_ip = redisServer.redis_ip;
+    redis_port = redisServer.redis_port;
+}
+catch (err) {
+    console.log('parsing redis_server.json failed!');
+    console.log(err);
+}
+
+var client = redis.createClient(redis_port,redis_ip, {});
 var serversList = {};
-var args = process.argv.slice(2);
-var PORT = args[0];
+var PORT=3000;
 
 // REDIS
 //var client = redis.createClient(6379, '127.0.0.1', {})
@@ -95,7 +107,7 @@ var server = app.listen(3000, function () {
   // client.del('serversList')
   // var host = server.address().address;
   // var port = server.address().port;
-  console.log('Example app listening at http://%s:%s', "127.0", 3000);
+  console.log('Example app listening at port', "", 3000);
 });
 
 module.exports = server;
