@@ -68,6 +68,11 @@
   
   - name: install forever
     command: npm install forever -g
+  
+  - name: run app
+    command: node app.js
+    args: 
+      chdir: ~/product/Milestone3/app
 
 
 
