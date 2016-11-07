@@ -4,6 +4,7 @@ var express = require('express');
 var fs      = require('fs');
 var http      = require('http');
 var httpProxy = require('http-proxy');
+var ip = require('ip');
 var app = express();
 
 var redis_ip, redis_port
@@ -71,7 +72,7 @@ app.get('/meow', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-  res.send("Hello world from server http://localhost:" + PORT.toString()+"/");
+  res.send("Hello world from prouduct server:" + ip.address()+":"+PORT.toString()+"/");
 });
 
 app.get('/recent',function(req,res){
