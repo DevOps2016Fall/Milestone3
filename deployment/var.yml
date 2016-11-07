@@ -4,6 +4,9 @@ system_packages:
   - git
   - python-dev
   - python-setuptools
-  - maven
+  - nodejs
+  - npm
 python_packages:
   - pip
+python_pip_packages:
+  - ansible
