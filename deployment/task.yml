@@ -1,12 +1,5 @@
 ---
-- hosts: proxy
-  become: yes
-  vars_files:
-    - var.yml
-  become: yes
-  tasks:
   - name: Install required system packages.
-    become: yes
     apt: pkg={{ item }} state=installed update-cache=yes
     with_items: "{{ system_packages }}"
 
@@ -21,23 +14,23 @@
   - name : Install curl
     apt: pkg=curl state=installed update_cache=true
 
-  - name: Mkdir proxy folder
-    file: state=directory path=~/proxy
+  - name: Mkdir product folder
+    file: state=directory path=~/product
 
-  - stat: path=~/proxy/Milestone3
+  - stat: path=~/product/Milestone3
     register: m3_repo_exist
 
   - name: Clone the whole repo 
     command: git clone https://github.com/DevOps2016Fall/Milestone3.git
     when: m3_repo_exist.stat.exists == False
     args:
-      chdir: ~/proxy
+      chdir: ~/product
 
   - name: Pull new commits
     command: git pull origin master
     when: m3_repo_exist.stat.exists == True
     args:
-       chdir: ~/proxy/Milestone3
+       chdir: ~/product/Milestone3
   
   - stat : path=/usr/bin/node
     register: node_exist
@@ -56,18 +49,39 @@
   - name : Npm install dependency
     command : npm install 
     args:
-      chdir: ~/proxy/Milestone3/deployment
+      chdir: ~/product/Milestone3/deployment
 
   - name: install app dependency
     command : npm install
     args:
-      chdir: ~/proxy/Milestone3/app
+      chdir: ~/product/Milestone3/app
 
   - name: install http-server
     command: npm install http-server -g
   
   - name: install forever
     command: npm install forever -g
+
+  - name: Get app process id
+    shell: "ps aux | grep app.js | grep -v grep | awk '{print $2}'"
+    register: process_id
+
+  - name: Stop app process
+    shell: kill -9 {{ item }}
+    with_items: process_id.stdout_lines
+    ignore_errors: True  # Ignore error when no process running
+
+  - name: "Check list of Node.js apps running."
+    command: forever list
+    register: forever_list
+    changed_when: false
+
+  - name: "Start example Node.js app."
+    command: forever start app.js
+    when: "forever_list.stdout.find('~/product/Milestone3/app/app.js') == -1"
+    args:
+      chdir: ~/product/Milestone3/app/
+
 
 
 
