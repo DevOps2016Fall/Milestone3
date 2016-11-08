@@ -55,7 +55,7 @@ var client =
 			"size":"512mb",
 			"image":imageName,
 			// Id to ssh_key already associated with account.
-			"ssh_keys":[sshID],
+			"ssh_keys":sshID,
 			//"ssh_keys":null,
 			"backups":false,
 			"ipv6":false,
