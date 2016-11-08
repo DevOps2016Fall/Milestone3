@@ -20,7 +20,7 @@ do
         node provision_newProductServer.js product
         sleep 10s
         export ansible_host_key_checking=False
-        ansible-playbook -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
+        ansible-playbook  -e 'host_key_checking=False' -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
         cd ../monitor
     fi
     sleep 30s
