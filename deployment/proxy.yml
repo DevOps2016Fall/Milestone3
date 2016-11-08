@@ -67,6 +67,20 @@
   - name: install forever
     command: npm install forever -g
 
+  - name: Get monitor_process_id 
+    shell: "ps aux | grep \"monitor.sh\\|cpu.py\\|memory.py\" | grep -v grep | awk '{print $2}'"
+    register: monitor_process_id
+
+  - name: Stop monitor_process_id
+    shell: kill -9 {{ item }}
+    with_items: monitor_process_id.stdout_lines
+    ignore_errors: True  # Ignore error when no process running
+  
+  - name: Start monitor
+    shell: ./monitor.sh
+    args:
+      chdir: ~/proxy/Milestone3/monitor
+
   - name: Get app process id
     shell: "ps aux | grep proxy.js | grep -v grep | awk '{print $2}'"
     register: process_id
@@ -87,19 +101,7 @@
     args:
       chdir: ~/proxy/Milestone3/app/
 
-  - name: Get monitor_process_id 
-    shell: "ps aux | grep 'monitor.sh\|cpu.py\|memory.py' | grep -v grep | awk '{print $2}'"
-    register: monitor_process_id
 
-  - name: Stop monitor_process_id
-    shell: kill -9 {{ item }}
-    with_items: monitor_process_id.stdout_lines
-    ignore_errors: True  # Ignore error when no process running
-  
-  - name: Start monitor
-    shell: ./monitor.sh
-    args:
-      chdir: ~/proxy/Milestone3/monitor
   
 
 
