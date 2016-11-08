@@ -89,7 +89,7 @@
       chdir: ~/product/Milestone3/app/
   
   - name: Get monitor_process_id 
-    shell: "ps aux | grep 'monitor.sh\|cpu.py\|memory.py' | grep -v grep | awk '{print $2}'"
+    shell: "ps aux | grep \"monitor.sh\\|cpu.py\\|memory.py\" | grep -v grep | awk '{print $2}'"
     register: monitor_process_id
 
   - name: Stop monitor_process_id
