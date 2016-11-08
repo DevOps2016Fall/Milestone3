@@ -114,6 +114,14 @@ setTimeout(function(){
 	  if(serverName == "product"){
   	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
   }
+  exec("export ANSIBLE_HOST_KEY_CHECKING=False",function(err){
+  	if (err instanceof Error)
+      throw err;
+    if( err )
+    {
+      console.error( err );
+    }
+  });
   exec("ansible-playbook -i inventory_product product.yml", function(err){
   	if (err instanceof Error)
       throw err;
@@ -131,7 +139,7 @@ function callCreate(client, callback){
 	console.log(data)
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
-	fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root host_key_checking = False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+	fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   console.log("A new product server is provisioned: done!");
   callback(serverName, publicIP)
   });
