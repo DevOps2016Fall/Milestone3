@@ -14,7 +14,7 @@ do
     if [ $mem -gt 50 ]; then
         echo The Memory usage is high. $mem% | mail -s "High memory usage for $sysname at ip $ip" wfu@ncsu.edu
     fi
-    if [[ $mem -gt 50 && $sysname == *"Weis-MacBook-Air.local"* ]]; then
+    if [[ $cpu -gt 50 && $sysname == *"Weis-MacBook-Air.local"* ]]; then
         cd ../deployment
         echo Proxy server has monitorred high traffic and a new app server is being auomatically provisioned
         node provision_newProductServer.js product
