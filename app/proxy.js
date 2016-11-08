@@ -39,7 +39,7 @@ var infrastructure =
     {
       if (req.url == "/spawn")
       {
-        exec('node provision_newProductServer.js ' + START_PORT,function(err,out,code)
+        exec('node ../deployment/provision_newProductServer.js product', function(err,out,code)
         {
           var newProductServer
           console.log("attempting to launch "+ START_PORT.toString() +" server");
@@ -51,12 +51,14 @@ var infrastructure =
           }
           client.lrange("productServersList", 0, 1, function(err, value){
             value.forEach(function(item){
-              newProductServer = item.toString();
+              // newProductServer = item.toString();
+              res.writeHead(200, {'Content-Type': 'text/plain'});
+              res.end("Create a  server : "+ item);
             });
           });
         });
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end("Create a  server : "+ newProductServer);
+        // res.writeHead(200, {'Content-Type': 'text/plain'});
+        // res.end("Create a  server : "+ newProductServer);
       }
       if(req.url == "/destroy")
       {
