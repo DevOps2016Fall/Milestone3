@@ -4,18 +4,21 @@ var redis = require('redis');
 var fs = require("fs");
 var exec = require('child_process').exec;
 var args = process.argv.slice(2);
-if(args.length == 0){
+if(args.length == 0)
+{
   throw "Please pass serverName!";
 }
 
 var redis_ip, redis_port
 var redis_info = fs.readFileSync('../app/redis_server.json');
-try {
+try 
+{
     redisServer = JSON.parse(redis_info);
     redis_ip = redisServer.redis_ip;
     redis_port = redisServer.redis_port;
 }
-catch (err) {
+catch (err) 
+{
     console.log('parsing redis_server.json failed!');
     console.log(err);
 }
@@ -103,57 +106,88 @@ client.createDroplet(name, region, image, sshID,function(err, resp, body)
 	}
 });
 
-// setTimeout(callCreate(){
-//   if(serverName == "product"){
-//   	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
-//   }
-// },20000);
-
-setTimeout(function(){
-	callCreate(client, function(serverName,publicIP){
+callCreateDroplet(client,function(dropletId){
+	callPostCreate(client, function(serverName,publicIP)
+	{
 	  if(serverName == "product"){
   	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
-  }
-  exec("export ANSIBLE_HOST_KEY_CHECKING=False",function(err){
-  	if (err instanceof Error)
-      throw err;
-    if( err )
-    {
-      console.error( err );
-    }
-  });
-	var util  = require('util'),
-	    spawn = require('child_process').spawn,
-	    ls    = spawn('ansible-playbook',['-i','/root/Milestone3/deployment/inventory_product','/root/Milestone3/deployment/product.yml']);
+  	}
+		var util  = require('util'),
+		    spawn = require('child_process').spawn,
+		    ls    = spawn('ansible-playbook',['-i','/root/Milestone3/deployment/inventory_product','/root/Milestone3/deployment/product.yml']);
 
-	ls.stdout.on('data', function (data) {
-	  console.log('stdout: ' + data.toString());
-	});
+		ls.stdout.on('data', function (data) 
+		{
+		  console.log('stdout: ' + data.toString());
+		});
 
-	ls.stderr.on('data', function (data) {
-	  console.log('stderr: ' + data.toString());
-	});
+		ls.stderr.on('data', function (data) 
+		{
+		  console.log('stderr: ' + data.toString());
+		});
 
-	ls.on('exit', function (code) {
-	  console.log('child process exited with code ' + code.toString());
-	});
-	exec('forever stopall', function()
-    {
+		ls.on('exit', function (code) 
+		{
+		  console.log('child process exited with code ' + code.toString());
+		});
+		exec('forever stopall', function()
+		{
       console.log("Finish!");
       process.exit();
-    });
+	  });
+	});
+});
+function callCreateDroplet(client,callback)
+{
+	client.createDroplet(name, region, image, sshID,function(err, resp, body)
+	{
+		if(!err && resp.statusCode == 202)
+		{
+			dropletId = body.droplet.id;
+		}
+		callback(dropletId);
+	});
+}
 
-	})},20000);
+// setTimeout(function(){
+// 	callPostCreate(client, function(serverName,publicIP){
+// 	  if(serverName == "product"){
+//   	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
+//   }
+// 	var util  = require('util'),
+// 	    spawn = require('child_process').spawn,
+// 	    ls    = spawn('ansible-playbook',['-i','/root/Milestone3/deployment/inventory_product','/root/Milestone3/deployment/product.yml']);
 
-function callCreate(client, callback){
-	client.retrieveDroplet(dropletId,function(err, response){
-	var data = response.body;
-	console.log(data)
-  var publicIP = data.droplet.networks.v4[0].ip_address;
-  console.log("DigitalOcean PublicIP: "+ publicIP);
-	fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_host_key_checking=False ansible_ssh_private_key_file=/root/Milestone3/key/ssh\n');
-  console.log("A new product server is provisioned: done!");
-  callback(serverName, publicIP)
+// 	ls.stdout.on('data', function (data) {
+// 	  console.log('stdout: ' + data.toString());
+// 	});
+
+// 	ls.stderr.on('data', function (data) {
+// 	  console.log('stderr: ' + data.toString());
+// 	});
+
+// 	ls.on('exit', function (code) {
+// 	  console.log('child process exited with code ' + code.toString());
+// 	});
+// 	exec('forever stopall', function()
+//     {
+//       console.log("Finish!");
+//       process.exit();
+//     });
+
+// 	})},28000);
+
+function callPostCreate(client, callback)
+{
+	client.retrieveDroplet(dropletId,function(err, response)
+	{
+		var data = response.body;
+		console.log(data)
+	  var publicIP = data.droplet.networks.v4[0].ip_address;
+	  console.log("DigitalOcean PublicIP: "+ publicIP);
+		fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_host_key_checking=False ansible_ssh_private_key_file=/root/Milestone3/key/ssh\n');
+	  console.log("A new product server is provisioned: done!");
+	  callback(serverName, publicIP)
   });
 }
 
