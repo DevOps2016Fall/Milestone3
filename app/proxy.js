@@ -19,10 +19,6 @@ catch (err) {
 
 var client = redis.createClient(redis_port,redis_ip, {});
 
-var product = fs.readFileSync('./product_server.json');
-var productServer = JSON.parse(product);
-var productIp = productServer.product_ip;
-var productPort = productServer.product_port;
 var TARGET = "http://"+productIp+":"+productPort;
 
 
