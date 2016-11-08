@@ -103,35 +103,6 @@ client.createDroplet(name, region, image, sshID,function(err, resp, body)
 	}
 });
 
-// setTimeout(callCreate(){
-//   if(serverName == "product"){
-//   	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
-//   }
-// },20000);
-
-setTimeout(function(){
-	callPostCreate(client, function(serverName,publicIP){
-	  if(serverName == "product"){
-  	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
-  }
-	var util  = require('util'),
-	    spawn = require('child_process').spawn,
-	    ls    = spawn('ansible-playbook',['-i','/root/Milestone3/deployment/inventory_product','/root/Milestone3/deployment/product.yml']);
-
-	ls.stdout.on('data', function (data) {
-	  console.log('stdout: ' + data.toString());
-	});
-
-	ls.stderr.on('data', function (data) {
-	  console.log('stderr: ' + data.toString());
-	});
-
-	ls.on('exit', function (code) {
-	  console.log('child process exited with code ' + code.toString());
-	});
-
-	})},38000);
-
 function callPostCreate(client, callback){
 	client.retrieveDroplet(dropletId,function(err, response){
 	var data = response.body;
@@ -143,6 +114,31 @@ function callPostCreate(client, callback){
   callback(serverName, publicIP)
   });
 }
+
+setTimeout(function(){
+	callPostCreate(client, function(serverName,publicIP){
+	  if(serverName == "product"){
+  		redisClient.lpush("productServersList","http://"+publicIP+":3000/");
+  	}
+	})
+},38000);
+
+var util  = require('util'),
+    spawn = require('child_process').spawn,
+    ls    = spawn('ansible-playbook',['-i','/root/Milestone3/deployment/inventory_product','/root/Milestone3/deployment/product.yml']);
+
+ls.stdout.on('data', function (data) {
+  console.log('stdout: ' + data.toString());
+});
+
+ls.stderr.on('data', function (data) {
+  console.log('stderr: ' + data.toString());
+});
+
+ls.on('exit', function (code) {
+  console.log('child process exited with code ' + code.toString());
+});
+
 
 
 
