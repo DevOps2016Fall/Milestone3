@@ -3,26 +3,27 @@ var redis = require('redis');
 var os   = require("os");
 var fs = require("fs");
 var args = process.argv.slice(2);
+var serverName = args[0];
 if(args.length == 0){
   throw "Please pass serverName!";
 }
+if(serverName!="redis"){
+	var redis_ip, redis_port
+	var redis_info = fs.readFileSync('../app/redis_server.json');
+	try {
+	    redisServer = JSON.parse(redis_info);
+	    redis_ip = redisServer.redis_ip;
+	    redis_port = redisServer.redis_port;
+	}
+	catch (err) {
+	    console.log('parsing redis_server.json failed!');
+	    console.log(err);
+	}
 
-var redis_ip, redis_port
-var redis_info = fs.readFileSync('../app/redis_server.json');
-try {
-    redisServer = JSON.parse(redis_info);
-    redis_ip = redisServer.redis_ip;
-    redis_port = redisServer.redis_port;
+	var redisClient = redis.createClient(redis_port,redis_ip, {});
+
 }
-catch (err) {
-    console.log('parsing redis_server.json failed!');
-    console.log(err);
-}
 
-var redisClient = redis.createClient(redis_port,redis_ip, {});
-
-
-var serverName = args[0]
 var config = {};
 config.token = "a40b9e915e57df76e39a1eab52a4495e327f445d7d52a00c6e9a059ca0574466";// my own token
 
@@ -104,29 +105,51 @@ client.createDroplet(name, region, image, sshID,function(err, resp, body)
 });
 
 setTimeout(function(){
-	client.retrieveDroplet(dropletId,function(err, response){
-	var data = response.body;
-  var publicIP = data.droplet.networks.v4[0].ip_address;
-  console.log("DigitalOcean PublicIP: "+ publicIP);
-  console.log("DigitalOcean: done!");
-  if(serverName == "redis"){
-  	fs.writeFile('../app/redis_server.json','{\"redis_ip\":\"'+publicIP+'\", \"redis_port\":6379}')
-	  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  host_key_checking = False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
-
-  }
-  else if(serverName == "product"){
-  	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
-		fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  host_key_checking = False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
-
-  }
-  else if(serverName == "staging"){
-  	redisClient.lpush("stagingServersList","http://"+publicIP+":3000/");
-	  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  host_key_checking = False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
-  }
-
+  callCreate(client, function(serverName,publicIP){
+	  if(serverName == "redis"){
+	  	fs.writeFile('../app/redis_server.json','{\"redis_ip\":\"'+publicIP+'\", \"redis_port\":6379}')
+		  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+		  run_ansible("inventory","redis.yml")
+	  }
+	  if(serverName == "product"){
+	  	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
+			fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+      run_ansible("inventory_product","product.yml")
+	  }
+	  if(serverName == "staging"){
+	  	redisClient.lpush("stagingServersList","http://"+publicIP+":3000/");
+		  fs.appendFile('inventory_product', staging+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+	  }
   });
 },20000);
 
+function callCreate(client, callback){
+	client.retrieveDroplet(dropletId,function(err, response){
+	var data = response.body;
+	console.log(data)
+  var publicIP = data.droplet.networks.v4[0].ip_address;
+  console.log("DigitalOcean PublicIP: "+ publicIP);
+	// fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+  console.log("A new product server is provisioned: done!");
+  callback(serverName, publicIP)
+  });
+}
 
+function run_ansible(inventory, playbook){
+	var util  = require('util'),
+	    spawn = require('child_process').spawn,
+	    ls    = spawn('ansible-playbook',['-i',inventory,playbook]);
 
+	ls.stdout.on('data', function (data) {
+	  console.log('stdout: ' + data.toString());
+	});
+
+	ls.stderr.on('data', function (data) {
+	  console.log('stderr: ' + data.toString());
+	});
+
+	ls.on('exit', function (code) {
+	  console.log('child process exited with code ' + code.toString());
+	});
+}
 
