@@ -130,10 +130,10 @@ setTimeout(function(){
 function callPostCreate(client, callback){
 	client.retrieveDroplet(dropletId,function(err, response){
 	var data = response.body;
-	console.log(data)
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
-	fs.appendFile('inventory_product', 'product ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_host_key_checking=False ansible_ssh_private_key_file=/root/Milestone3/key/ssh\n');
+  fs.writeFile('inventory_product','[product]\n')
+	fs.appendFile('inventory_product', publicIP+ ' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_host_key_checking=False ansible_ssh_private_key_file=/root/Milestone3/key/ssh\n');
   console.log("A new product server is provisioned: done!");
   callback(serverName, publicIP)
   });
