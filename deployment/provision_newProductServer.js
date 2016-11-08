@@ -32,8 +32,6 @@ var headers =
 	Authorization: 'Bearer ' + config.token
 };
 
-// Documentation for needle:
-// https://github.com/tomas/needle
 
 var client =
 {
@@ -93,21 +91,14 @@ var region = "nyc2"; // Fill one in from #1
 var image = "ubuntu-14-04-x64"; // Fill one in from #2
 var sshID = 3374967; // get it by proxy
 var dropletId = null;
-client.createDroplet(name, region, image, sshID,function(err, resp, body)
-{
+client.createDroplet(name, region, image, sshID,function(err, resp, body){
 	// StatusCode 202 - Means server accepted request.
-	if(!err && resp.statusCode == 202)
-	{
+	if(!err && resp.statusCode == 202){
 		dropletId = body.droplet.id;
 		// console.log("dropletId: "+ dropletId)
 	}
 });
 
-// setTimeout(callCreate(){
-//   if(serverName == "product"){
-//   	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
-//   }
-// },20000);
 
 setTimeout(function(){
 	callPostCreate(client, function(serverName,publicIP){
@@ -128,15 +119,13 @@ setTimeout(function(){
 
 		ls.on('exit', function (code) {
 		  console.log('child process exited with code ' + code.toString());
+		  exec('forever stopall', function(){
+      	console.log("infrastructure shutdown");
+      	process.exit();
+    	})
 		});
-
 	})},38000);
 
-setTimeout(exec('forever stopall', function()
-    {
-      console.log("infrastructure shutdown");
-      process.exit();
-    }),240000);
 
 function callPostCreate(client, callback){
 	client.retrieveDroplet(dropletId,function(err, response){
