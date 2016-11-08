@@ -11,8 +11,7 @@ exec("export ANSIBLE_HOST_KEY_CHECKING=False",function(err){
 
 
 const spawn = require( 'child_process' ).spawnSync,
-     ls = spawn( 'ansible-playbook', [ '-i', 'inventory_product','product.yml' ] );
-
+     ls = spawn( 'ansible-playbook', [ '-i', '~/proxy/Milestone3/deployment/inventory_product','~/proxy/Milestone3/deployment/product.yml' ] );
 console.log( `stderr: ${ls.stderr.toString()}` );
 console.log( `stdout: ${ls.stdout.toString()}` );
 // var Ansible = require('node-ansible')
