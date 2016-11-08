@@ -92,7 +92,7 @@ var client =
 var name = serverName;
 var region = "nyc2"; // Fill one in from #1
 var image = "ubuntu-14-04-x64"; // Fill one in from #2
-var sshID = 3374967; // get it by retrieve
+var sshID = [4485896,3374967]; // get it by retrieve
 var dropletId = null;
 client.createDroplet(name, region, image, sshID,function(err, resp, body)
 {
