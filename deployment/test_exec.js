@@ -11,7 +11,7 @@
 
 var util  = require('util'),
     spawn = require('child_process').spawn,
-    ls    = spawn('ansible-playbook',['-i','~/Milestone3/deployment/inventory_product','~/Milestone3/deployment/product.yml']);
+    ls    = spawn('ansible-playbook',['-i','/root/Milestone3/deployment/inventory_product','/root/Milestone3/deployment/product.yml']);
 
 ls.stdout.on('data', function (data) {
   console.log('stdout: ' + data.toString());
