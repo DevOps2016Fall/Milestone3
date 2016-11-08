@@ -52,7 +52,7 @@ var infrastructure =
           });
         });
         res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end("Create a  server : "+ out.toString());
+        res.end("Create a  server !");
       }
       if(req.url == "/destroy")
       {
