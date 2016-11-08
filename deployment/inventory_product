@@ -3,3 +3,4 @@ product1 ansible_ssh_host=162.243.87.236 ansible_ssh_user=root ansible_ssh_priva
 product2 ansible_ssh_host=162.243.56.28 ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa  host_key_checking=False
 162.243.62.204 ansible_ssh_host=162.243.62.204 ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa host_key_checking=False
 162.243.78.118 ansible_ssh_host=162.243.78.118 ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa host_key_checking=False
+162.243.41.22 ansible_ssh_host=162.243.41.22 ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa host_key_checking=False
