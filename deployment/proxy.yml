@@ -19,23 +19,20 @@
   - name : Install curl
     apt: pkg=curl state=installed update_cache=true
 
-  - name: Mkdir proxy folder
-    file: state=directory path=~/proxy
-
-  - stat: path=~/proxy/Milestone3
+  - stat: path=~/Milestone3
     register: m3_repo_exist
 
   - name: Clone the whole repo 
     command: git clone https://github.com/DevOps2016Fall/Milestone3.git
     when: m3_repo_exist.stat.exists == False
     args:
-      chdir: ~/proxy
+      chdir: ~/
 
   - name: Pull new commits
     command: git pull origin master
     when: m3_repo_exist.stat.exists == True
     args:
-       chdir: ~/proxy/Milestone3
+       chdir: ~/Milestone3
   
   - stat : path=/usr/bin/node
     register: node_exist
@@ -54,12 +51,12 @@
   - name : Npm install dependency
     command : npm install 
     args:
-      chdir: ~/proxy/Milestone3/deployment
+      chdir: ~/Milestone3/deployment
 
   - name: install app dependency
     command : npm install
     args:
-      chdir: ~/proxy/Milestone3/app
+      chdir: ~/Milestone3/app
 
   - name: install http-server
     command: npm install http-server -g
@@ -83,9 +80,9 @@
 
   - name: "Start example Node.js app."
     command: forever start proxy.js
-    when: "forever_list.stdout.find('~/proxy/Milestone3/app/proxy.js') == -1"
+    when: "forever_list.stdout.find('~/Milestone3/app/proxy.js') == -1"
     args:
-      chdir: ~/proxy/Milestone3/app/
+      chdir: ~/Milestone3/app/
   
   - name: Get monitor_process_id 
     shell: "ps aux | grep \"monitor.sh\\|cpu.py\\|memory.py\" | grep -v grep | awk '{print $2}'"
@@ -99,7 +96,7 @@
   - name: Start monitor
     shell: ./monitor.sh
     args:
-      chdir: ~/proxy/Milestone3/monitor
+      chdir: ~/Milestone3/monitor
 
 
   
