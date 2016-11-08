@@ -35,22 +35,22 @@ var infrastructure =
     {
       if (req.url == "/spawn")
       {
-        exec('node ../deployment/provision_newProductServer.js product', function(err,out,code)
-        {
-          var newProductServer
-          console.log("attempting to launch "+ START_PORT.toString() +" server");
-          if (err instanceof Error)
-            throw err;
-          if( err )
-          {
-            console.error( err );
-          }
-          client.lrange("productServersList", 0, 1, function(err, value){
-            value.forEach(function(item){
-              // newProductServer = item.toString();
-            });
-          });
+        var util  = require('util'),
+            spawn = require('child_process').spawn,
+            ls    = spawn('node',['-i','../deployment/provision_newProductServer.js','product']);
+
+        ls.stdout.on('data', function (data) {
+          console.log('stdout: ' + data.toString());
         });
+
+        ls.stderr.on('data', function (data) {
+          console.log('stderr: ' + data.toString());
+        });
+
+        ls.on('exit', function (code) {
+          console.log('child process exited with code ' + code.toString());
+        });
+
         res.writeHead(200, {'Content-Type': 'text/plain'});
         res.end("Create a  server !");
       }
