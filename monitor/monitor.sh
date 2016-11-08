@@ -23,6 +23,6 @@ do
         ansible-playbook -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
         cd ../monitor
     fi
-    sleep 1m
+    sleep 30s
 done
 
