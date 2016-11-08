@@ -10,3 +10,4 @@ python_packages:
   - pip
 python_pip_packages:
   - ansible
+  - psutil
