@@ -135,7 +135,7 @@ setTimeout(function(){
       process.exit();
     });
 
-	})},28000);
+	})},38000);
 
 function callPostCreate(client, callback){
 	client.retrieveDroplet(dropletId,function(err, response){
