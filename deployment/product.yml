@@ -95,10 +95,10 @@
     with_items: monitor_process_id.stdout_lines
     ignore_errors: True  # Ignore error when no process running
   
-  - name: Start monitor
-    shell: ./monitor.sh
-    args:
-      chdir: ~/Milestone3/monitor
+  # - name: Start monitor
+  #   shell: ./monitor.sh
+  #   args:
+  #     chdir: ~/Milestone3/monitor
 
 
 
