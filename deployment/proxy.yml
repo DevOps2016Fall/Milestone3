@@ -3,9 +3,8 @@
   become: yes
   vars_files:
     - var.yml
-  become: yes
   tasks:
-    - include: tasks.yml
+    - include: task.yml
   
 
 
