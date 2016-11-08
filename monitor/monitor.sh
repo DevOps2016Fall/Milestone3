@@ -4,11 +4,11 @@ ip=$(ip route get 1 | awk '{print $NF;exit}')
 while :
 do
     cpu=$(python cpu.py)
-    if [ $cpu -gt 60 ]; then
+    if [ $cpu -gt 50 ]; then
         echo The CPU usage is high. $cpu%  | mail -s "High CPU usage for $sysname at ip $ip" wfu@ncsu.edu
     fi
     mem=$(python memory.py)
-    if [ $mem -gt 80 ]; then
+    if [ $mem -gt 50 ]; then
         echo The Memory usage is high. $mem% | mail -s "High memory usage for $sysname at ip $ip" wfu@ncsu.edu
     fi
     if [[ $mem -gt 50 && $sysname == *"Weis-MacBook-Air.local"* ]]; then
