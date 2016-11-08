@@ -14,7 +14,7 @@ do
     if [[ $mem -gt 50 && $sysname == *"Weis-MacBook-Air.local"* ]]; then
         cd ../deployment
         echo Proxy server has monitorred high traffic and a new app server is being auomatically provisioned
-        node provision_newProductServer.js
+        node provision_newProductServer.js product
         sleep 10s
         ansible-playbook -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
         cd ../monitor
