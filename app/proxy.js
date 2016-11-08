@@ -19,7 +19,7 @@ catch (err) {
 
 var client = redis.createClient(redis_port,redis_ip, {});
 
-var TARGET = "http://"+productIp+":"+productPort;
+var TARGET
 
 
 var START_PORT=3000;
