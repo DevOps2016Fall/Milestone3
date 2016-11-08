@@ -1,17 +1,22 @@
 #!/bin/bash
 sysname=$(hostname)
+ip=$(ip route get 1 | awk '{print $NF;exit}')
 while :
 do
     cpu=$(python cpu.py)
     if [ $cpu -gt 60 ]; then
-        echo The CPU usage is high. $cpu%  | mail -s "High CPU usage for $sysname" wfu@ncsu.edu
+        echo The CPU usage is high. $cpu%  | mail -s "High CPU usage for $sysname at ip $ip" wfu@ncsu.edu
     fi
     mem=$(python memory.py)
-    if [ $memOutput -gt 30 ]; then
-        echo The Memory usage is high. $mem% | mail -s "High memory usage for $sysname" wfu@ncsu.edu
+    if [ $mem -gt 80 ]; then
+        echo The Memory usage is high. $mem% | mail -s "High memory usage for $sysname at ip $ip" wfu@ncsu.edu
     fi
-    if [ $cpu -gt 80 | $sysname == *"UnityId-Weis-MacBook-Air.local"* ]; then
-        ansible-playbook -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
+    if [[ $mem -gt 50 && $sysname == *"Weis-MacBook-Air.local"* ]]; then
+        cd ../deployment
+        echo comming into deployment
+        # node provision_newProductServer.js
+        # ansible-playbook -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
+        cd ../monitor
     fi
     sleep 1m
 done
