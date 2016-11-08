@@ -138,7 +138,7 @@ setTimeout(function(){
 	  console.log('child process exited with code ' + code.toString());
 	});
 
-	})},10000);
+	})},20000);
 
 function callCreate(client, callback){
 	client.retrieveDroplet(dropletId,function(err, response){
@@ -146,7 +146,7 @@ function callCreate(client, callback){
 	console.log(data)
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
-	fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+	fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   console.log("A new product server is provisioned: done!");
   callback(serverName, publicIP)
   });
