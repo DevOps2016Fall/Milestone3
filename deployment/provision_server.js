@@ -1,10 +1,26 @@
 var needle = require("needle");
+var redis = require('redis');
 var os   = require("os");
 var fs = require("fs");
 var args = process.argv.slice(2);
 if(args.length == 0){
   throw "Please pass serverName!";
 }
+
+var redis_ip, redis_port
+var redis_info = fs.readFileSync('../app/redis_server.json');
+try {
+    redisServer = JSON.parse(redis_info);
+    redis_ip = redisServer.redis_ip;
+    redis_port = redisServer.redis_port;
+}
+catch (err) {
+    console.log('parsing redis_server.json failed!');
+    console.log(err);
+}
+
+var redisClient = redis.createClient(redis_port,redis_ip, {});
+
 
 var serverName = args[0]
 var config = {};
@@ -92,17 +108,22 @@ setTimeout(function(){
 	var data = response.body;
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
-	fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   console.log("DigitalOcean: done!");
   if(serverName == "redis"){
   	fs.writeFile('../app/redis_server.json','{\"redis_ip\":\"'+publicIP+'\", \"redis_port\":6379}')
+	  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  host_key_checking = False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+
   }
-  if(serverName == "product"){
-  	fs.appendFile('../app/product_server.json','{\"product_ip\":\"'+publicIP+'\", \"product_port\":3000}')
+  else if(serverName == "product"){
+  	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
+		fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  host_key_checking = False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+
   }
-  if(serverName == "staging"){
-  	fs.appendFile('../app/product_server.json','{\"stage_ip\":\"'+publicIP+'\", \"stage_port\":3000}')
+  else if(serverName == "staging"){
+  	redisClient.lpush("stagingServersList","http://"+publicIP+":3000/");
+	  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  host_key_checking = False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   }
+
   });
 },20000);
 
