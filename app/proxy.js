@@ -33,27 +33,7 @@ var infrastructure =
     var proxy   = httpProxy.createProxyServer(options);
     var server  = http.createServer(function(req, res)
     {
-      if (req.url == "/spawn")
-      {
-        var util  = require('util'),
-            spawn = require('child_process').spawn,
-            ls    = spawn('node',['-i','../deployment/provision_newProductServer.js','product']);
-
-        ls.stdout.on('data', function (data) {
-          console.log('stdout: ' + data.toString());
-        });
-
-        ls.stderr.on('data', function (data) {
-          console.log('stderr: ' + data.toString());
-        });
-
-        ls.on('exit', function (code) {
-          console.log('child process exited with code ' + code.toString());
-        });
-
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end("Create a  server !");
-      }
+      
       if(req.url == "/destroy")
       {
         client.lpop("serversList",function(err, src){
@@ -79,7 +59,7 @@ var infrastructure =
       if(req.url == "/listservers")
       {
         var live_servers="The following servers are available: \n";
-        client.lrange('serversList',0,-1,function(err,value){
+        client.lrange('productServersList',0,-1,function(err,value){
         value.forEach(function(item){
         live_servers +="\n\t" +item.toString();});
         res.writeHead(200, {'Content-Type': 'text/plain'});
