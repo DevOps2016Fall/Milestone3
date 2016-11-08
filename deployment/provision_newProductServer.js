@@ -91,7 +91,7 @@ var client =
 var name = "UnityId-"+os.hostname();
 var region = "nyc2"; // Fill one in from #1
 var image = "ubuntu-14-04-x64"; // Fill one in from #2
-var sshID = 4485896; // get it by proxy
+var sshID = 3374967; // get it by proxy
 var dropletId = null;
 client.createDroplet(name, region, image, sshID,function(err, resp, body)
 {
@@ -124,7 +124,7 @@ setTimeout(function(){
   });
 	var util  = require('util'),
 	    spawn = require('child_process').spawn,
-	    ls    = spawn('ansible-playbook',['-i','/root/proxy/Milestone3/deployment/inventory_product','/root/proxy/Milestone3/deployment/product.yml']);
+	    ls    = spawn('ansible-playbook',['-i','~/Milestone3/deployment/inventory_product','~/Milestone3/deployment/product.yml']);
 
 	ls.stdout.on('data', function (data) {
 	  console.log('stdout: ' + data.toString());
@@ -137,6 +137,11 @@ setTimeout(function(){
 	ls.on('exit', function (code) {
 	  console.log('child process exited with code ' + code.toString());
 	});
+	exec('forever stopall', function()
+    {
+      console.log("Finish!");
+      process.exit();
+    });
 
 	})},20000);
 
@@ -146,7 +151,7 @@ function callCreate(client, callback){
 	console.log(data)
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
-	fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
+	fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_host_key_checking=False ansible_ssh_private_key_file=~/Milestone3/key/ssh\n');
   console.log("A new product server is provisioned: done!");
   callback(serverName, publicIP)
   });

@@ -55,7 +55,7 @@ var client =
 			"size":"512mb",
 			"image":imageName,
 			// Id to ssh_key already associated with account.
-			"ssh_keys":sshID,
+			"ssh_keys":[sshID],
 			//"ssh_keys":null,
 			"backups":false,
 			"ipv6":false,
@@ -92,7 +92,8 @@ var client =
 var name = serverName;
 var region = "nyc2"; // Fill one in from #1
 var image = "ubuntu-14-04-x64"; // Fill one in from #2
-var sshID = [4485896,3374967]; // get it by retrieve
+// var sshID = [4485896,3374967]; // get it by retrieve
+var sshID=3374967;
 var dropletId = null;
 client.createDroplet(name, region, image, sshID,function(err, resp, body)
 {
