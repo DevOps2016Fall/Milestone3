@@ -6,6 +6,25 @@
 
   tasks:
   - include: task.yml
+  - name: Get app process id
+    shell: "ps aux | grep app.js | grep -v grep | awk '{print $2}'"
+    register: process_id
+
+  - name: Stop app process
+    shell: kill -9 {{ item }}
+    with_items: process_id.stdout_lines
+    ignore_errors: True  # Ignore error when no process running
+
+  - name: "Check list of Node.js apps running."
+    command: forever list
+    register: forever_list
+    changed_when: false
+
+  - name: "Start example Node.js app."
+    command: forever start app.js
+    when: "forever_list.stdout.find('~/product/Milestone3/app/app.js') == -1"
+    args:
+      chdir: ~/product/Milestone3/app/
 
 
 
