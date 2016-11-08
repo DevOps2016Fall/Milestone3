@@ -82,7 +82,7 @@
     register: forever_list
     changed_when: false
 
-  - name: "Start example Node.js app."
+  - name: "Start Node.js app."
     command: forever start app.js
     when: "forever_list.stdout.find('~/product/Milestone3/app/app.js') == -1"
     args:
