@@ -5,7 +5,69 @@
     - var.yml
 
   tasks:
-  - include: task.yml
+  - name: Install required system packages.
+    apt: pkg={{ item }} state=installed update-cache=yes
+    with_items: "{{ system_packages }}"
+
+  - name: Install required pip packages.
+    easy_install: name={{ item }}
+    with_items: "{{ python_packages }}"
+
+  - name: Install ansible by pip
+    pip: name={{ item }}
+    with_items: "{{ python_pip_packages}}"
+
+  - name : Install curl
+    apt: pkg=curl state=installed update_cache=true
+
+  - name: Mkdir product folder
+    file: state=directory path=~/product
+
+  - stat: path=~/product/Milestone3
+    register: m3_repo_exist
+
+  - name: Clone the whole repo 
+    command: git clone https://github.com/DevOps2016Fall/Milestone3.git
+    when: m3_repo_exist.stat.exists == False
+    args:
+      chdir: ~/product
+
+  - name: Pull new commits
+    command: git pull origin master
+    when: m3_repo_exist.stat.exists == True
+    args:
+       chdir: ~/product/Milestone3
+  
+  - stat : path=/usr/bin/node
+    register: node_exist
+
+  - name: Linking nodejs to run as "node"
+    command: ln -s /usr/bin/nodejs /usr/bin/node
+    when: node_exist.stat.exists == False
+  
+
+  - name: update node 
+    command: npm install n -g
+
+  - name: update to 0.10.33
+    command: n 0.10.33
+
+  - name : Npm install dependency
+    command : npm install 
+    args:
+      chdir: ~/product/Milestone3/deployment
+
+  - name: install app dependency
+    command : npm install
+    args:
+      chdir: ~/product/Milestone3/app
+
+  - name: install http-server
+    command: npm install http-server -g
+  
+  - name: install forever
+    command: npm install forever -g
+
   - name: Get app process id
     shell: "ps aux | grep app.js | grep -v grep | awk '{print $2}'"
     register: process_id
