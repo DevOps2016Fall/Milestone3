@@ -13,9 +13,10 @@ do
     fi
     if [[ $mem -gt 50 && $sysname == *"Weis-MacBook-Air.local"* ]]; then
         cd ../deployment
-        echo comming into deployment
-        # node provision_newProductServer.js
-        # ansible-playbook -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
+        echo Proxy server has monitorred high traffic and a new app server is being auomatically provisioned
+        node provision_newProductServer.js
+        sleep 10s
+        ansible-playbook -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
         cd ../monitor
     fi
     sleep 1m
