@@ -89,7 +89,7 @@ var client =
 // #3 Create an droplet with the specified name, region, and image
 // Comment out when completed. ONLY RUN ONCE!!!!!
 // Write down/copy droplet id.
-var name = "UnityId-"+os.hostname();
+var name = serverName;
 var region = "nyc2"; // Fill one in from #1
 var image = "ubuntu-14-04-x64"; // Fill one in from #2
 var sshID = 3374967; // get it by retrieve
