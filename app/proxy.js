@@ -48,13 +48,11 @@ var infrastructure =
           client.lrange("productServersList", 0, 1, function(err, value){
             value.forEach(function(item){
               // newProductServer = item.toString();
-              res.writeHead(200, {'Content-Type': 'text/plain'});
-              res.end("Create a  server : "+ item);
             });
           });
         });
-        // res.writeHead(200, {'Content-Type': 'text/plain'});
-        // res.end("Create a  server : "+ newProductServer);
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end("Create a  server : "+ out.toString());
       }
       if(req.url == "/destroy")
       {
