@@ -6,7 +6,7 @@ var request = require("request");
 var redis = require('redis');
 
 var redis_ip, redis_port
-var redis_info = fs.readFileSync('./redis_server.json');
+var redis_info = fs.readFileSync('redis_server.json');
 try {
     redisServer = JSON.parse(redis_info);
     redis_ip = redisServer.redis_ip;
