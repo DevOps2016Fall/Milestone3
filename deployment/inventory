@@ -1,3 +1,2 @@
 proxy ansible_ssh_host=162.243.208.51 ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/Milestone3/key/ssh
 redis ansible_ssh_host=162.243.59.161 ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/Milestone3/key/ssh
-staging ansible_ssh_host=162.243.26.227 ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/Milestone3/key/ssh
