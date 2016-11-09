@@ -16,7 +16,7 @@ else
 fi
 
 echo "======================= JShint Is Running!======================="
-for f in $(ls *.js); do
+for f in $(ls app/*.js); do
     jshint "$f" > jshint.log
     jshint "$f"
     error="$(grep -o "error" jshint.log)"
