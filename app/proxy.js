@@ -1,12 +1,13 @@
 var http      = require('http');
+var path = require('path');
 var httpProxy = require('http-proxy');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var request = require("request");
 var redis = require('redis');
 
-var redis_ip, redis_port
-var redis_info = fs.readFileSync('redis_server.json');
+var redis_ip, redis_port;
+var redis_info = fs.readFileSync(path.resolve(__dirname, './redis_server.json'));
 try {
     redisServer = JSON.parse(redis_info);
     redis_ip = redisServer.redis_ip;
@@ -19,7 +20,7 @@ catch (err) {
 
 var client = redis.createClient(redis_port,redis_ip, {});
 
-var TARGET
+var TARGET;
 
 
 var START_PORT=3000;
@@ -53,15 +54,16 @@ var infrastructure =
       {
         if(Math.random()>0.7){
           client.rpoplpush("stagingServersList","stagingServersList",function(err,TARGET){
-            console.log("Proxy now pointing to a staging server:" + TARGET)
+            console.log("Proxy now pointing to a staging server:" + TARGET);
+            proxy.web( req, res, {target: TARGET } );
           });
         }
         else{
           client.rpoplpush("productServersList", "productServersList", function(err, TARGET){
             console.log("Proxy now pointing to a regular proudct server:" + TARGET);
+            proxy.web( req, res, {target: TARGET } );
           });
         }
-        proxy.web( req, res, {target: TARGET } );
       }
       if(req.url == "/listservers")
       {
