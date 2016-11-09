@@ -11,6 +11,7 @@ do
         cd ../app
         node canary.js "yes"
     fi
+    cd ../monitor
     mem=$(python memory.py)
     echo $mem
     if [ $mem -gt 50 ]; then
