@@ -12,11 +12,11 @@ We reuse the [hw1 code](https://github.com/DevOps2016Fall/Milestone3/blob/master
 
 
 
-## Task 1: Deploy software to proudction envirionsment
+## Task 1: Deploy software to production envronsment
 * We create a git [pre-commit](https://github.com/DevOps2016Fall/Milestone3/blob/master/pre-commit.sh) hook to do testing and analysis. If pass, then continue to commit; otherwise, this commit will be rejected. 
 * Specifically, we use Jhint to do analysis and mocha, chai to do express server unit test.
 * Our simple unit test script is [here](https://github.com/DevOps2016Fall/Milestone3/blob/master/test/test.js)
-* We create a [pre-push](https://github.com/DevOps2016Fall/Milestone3/blob/master/pre-push.sh) hook, which will call ansible to deploy the software into product server automatically.
+* We create a [post-receive](https://github.com/DevOps2016Fall/Milestone3/blob/master/pre-push.sh) hook, which will call ansible to deploy the software into product server automatically.
 
 
 ## Task 2: Automatic configuration of remote servers.
