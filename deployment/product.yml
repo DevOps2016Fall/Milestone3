@@ -24,34 +24,33 @@
   - stat: path=~/Milestone3
     register: m3_repo_exist
 
-  - name: Clone the whole repo 
+  - name: Clone the whole repo
     command: git clone https://github.com/DevOps2016Fall/Milestone3.git
     when: m3_repo_exist.stat.exists == False
     args:
       chdir: ~/
 
-  - name: Pull new commits
-    command: git pull origin master
-    when: m3_repo_exist.stat.exists == True
-    args:
-       chdir: ~/Milestone3
-  
+  - name: Push new changes to remote
+    # command: git pull origin master
+    # when: m3_repo_exist.stat.exists == True
+    synchronize: src=~/Milestone3/app dest=~/Milestone3/app
+
   - stat : path=/usr/bin/node
     register: node_exist
 
   - name: Linking nodejs to run as "node"
     command: ln -s /usr/bin/nodejs /usr/bin/node
     when: node_exist.stat.exists == False
-  
 
-  - name: update node 
+
+  - name: update node
     command: npm install n -g
 
   - name: update to 0.10.33
     command: n 0.10.33
 
   - name : Npm install dependency
-    command : npm install 
+    command : npm install
     args:
       chdir: ~/Milestone3/deployment
 
@@ -62,7 +61,7 @@
 
   - name: install http-server
     command: npm install http-server -g
-  
+
   - name: install forever
     command: npm install forever -g
 
@@ -85,8 +84,8 @@
     when: "forever_list.stdout.find('~/Milestone3/app/app.js') == -1"
     args:
       chdir: ~/Milestone3/app/
-  
-  - name: Get monitor_process_id 
+
+  - name: Get monitor_process_id
     shell: "ps aux | grep \"monitor.sh\\|cpu.py\\|memory.py\" | grep -v grep | awk '{print $2}'"
     register: monitor_process_id
 
@@ -94,22 +93,8 @@
     shell: kill -9 {{ item }}
     with_items: monitor_process_id.stdout_lines
     ignore_errors: True  # Ignore error when no process running
-  
+
   # - name: Start monitor
   #   shell: ./monitor.sh
   #   args:
   #     chdir: ~/Milestone3/monitor
-
-
-
-
-
-
-
-
-
-
-
-
-
-

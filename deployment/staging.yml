@@ -30,18 +30,22 @@
     args:
       chdir: ~/
 
-  - name: Switch to staging branch
-    command: git checkout staging
-    when: m3_repo_exist.stat.exists == True
-    args:
-      chdir: ~/Milestone3
-
-  - name: Pull new commits
-    command: git pull origin staging
-    when: m3_repo_exist.stat.exists == True
-    args:
-       chdir: ~/Milestone3
-
+  # - name: Switch to staging branch
+  #   command: git checkout staging
+  #   when: m3_repo_exist.stat.exists == True
+  #   args:
+  #     chdir: ~/Milestone3
+  #
+  # - name: Pull new commits
+  #   command: git pull origin staging
+  #   when: m3_repo_exist.stat.exists == True
+  #   args:
+  #      chdir: ~/Milestone3
+  - name: Push new changes to remote
+    # command: git pull origin master
+    # when: m3_repo_exist.stat.exists == True
+    synchronize: src=~/Milestone3/app dest=~/Milestone3/app
+    
   - stat: path=/usr/bin/node
     register: node_exist
 
@@ -70,7 +74,7 @@
 
   - name: install forever
     command: npm install forever -g
-    
+
   - name: Get app process id
     shell: "ps aux | grep app.js | grep -v grep | awk '{print $2}'"
     register: process_id
