@@ -3,7 +3,6 @@
   become: yes
   vars_files:
     - var.yml
-  become: yes
   tasks:
   - name: Install required system packages.
     become: yes
@@ -21,14 +20,12 @@
   - name : Install curl
     apt: pkg=curl state=installed update_cache=true
 
-  - name: Mkdir proxy folder
-    file: state=directory path=~/proxy
 
   - stat: path=~/Milestone3
     register: m3_repo_exist
 
   - name: Clone the whole repo
-    command: git clone https://github.com/DevOps2016Fall/Milestone3.git
+    command: git clone -b staging https://github.com/DevOps2016Fall/Milestone3.git
     when: m3_repo_exist.stat.exists == False
     args:
       chdir: ~/
@@ -40,7 +37,7 @@
       chdir: ~/Milestone3
 
   - name: Pull new commits
-    command: git pull origin master
+    command: git pull origin staging
     when: m3_repo_exist.stat.exists == True
     args:
        chdir: ~/Milestone3
