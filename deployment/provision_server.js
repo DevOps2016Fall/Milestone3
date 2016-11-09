@@ -40,15 +40,15 @@ var client =
 {
 	getSSHKeyID:function(onResponse)
 	{
-		needle.get("https://api.digitalocean.com/v2/account/keys/6e:a5:95:7d:ba:9b:e6:fd:d1:65:c2:1b:21:21:ef:7e",{headers:headers},onResponse)
+		needle.get("https://api.digitalocean.com/v2/account/keys/6e:a5:95:7d:ba:9b:e6:fd:d1:65:c2:1b:21:21:ef:7e",{headers:headers},onResponse);
   },
 	retrieveDroplet:function(dropletId,onResponse)
 	{
-		needle.get("https://api.digitalocean.com/v2/droplets/"+dropletId, {headers:headers}, onResponse)
+		needle.get("https://api.digitalocean.com/v2/droplets/"+dropletId, {headers:headers}, onResponse);
 	},
 	createDroplet: function (dropletName, region, imageName, sshID,onResponse)
 	{
-		var data = 
+		var data =
 		{
 			"name": dropletName,
 			"region":region,
@@ -108,31 +108,32 @@ client.createDroplet(name, region, image, sshID,function(err, resp, body)
 setTimeout(function(){
   callCreate(client, function(serverName,publicIP){
 	  if(serverName == "redis"){
-	  	fs.writeFile('../app/redis_server.json','{\"redis_ip\":\"'+publicIP+'\", \"redis_port\":6379}')
-		  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
-		  run_ansible("inventory","redis.yml")
+	  	fs.writeFile('../app/redis_server.json','{\"redis_ip\":\"'+publicIP+'\", \"redis_port\":6379}');
+		  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/key/ssh\n');
+		  run_ansible("inventory","redis.yml");
 	  }
 	  if(serverName == "product"){
 	  	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
-			fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
-      run_ansible("inventory_product","product.yml")
+			fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/key/ssh\n');
+      run_ansible("inventory_product","product.yml");
 	  }
 	  if(serverName == "staging"){
 	  	redisClient.lpush("stagingServersList","http://"+publicIP+":3000/");
-		  fs.appendFile('inventory_product', staging+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
-	  }
+		  fs.appendFile('inventory_product', serverName +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/key/ssh\n');
+      run_ansible("inventory_product","staging.yml");
+    }
   });
 },20000);
 
 function callCreate(client, callback){
 	client.retrieveDroplet(dropletId,function(err, response){
 	var data = response.body;
-	console.log(data)
+	// console.log(data);
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
 	// fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root host_key_checking=False ansible_ssh_private_key_file=~/.ssh/id_rsa\n');
   console.log("A new product server is provisioned: done!");
-  callback(serverName, publicIP)
+  callback(serverName, publicIP);
   });
 }
 
@@ -153,4 +154,3 @@ function run_ansible(inventory, playbook){
 	  console.log('child process exited with code ' + code.toString());
 	});
 }
-
