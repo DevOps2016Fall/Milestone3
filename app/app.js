@@ -97,11 +97,35 @@ app.get('/get',function(req,res){
 });
 
 app.get('/set',function(req,res){
-	client.set('key','this message will self-destruct in 10 seconds');
-	client.expire('key',20);
-	res.send('setting key!');
+
+	getSetFeature(function(value){
+		if (value ==="0"){
+			client.set('key','this message will self-destruct in 10 seconds');
+			client.expire('key',20);
+			res.send('setting key!');
+		}
+		else{
+			res.send('setting key features is disabled! YOU CAN\'T SET IT ');
+		}
+	});
+	// client.get('disableSET',function(err,value){
+	// 	if (value ==="0"){
+	// 		client.set('key','this message will self-destruct in 10 seconds');
+	// 		client.expire('key',20);
+	// 		res.send('setting key!');
+	// 	}
+	// 	else{
+	// 		res.send('setting key features is disabled! YOU CAN\'T SET IT ');
+	// 	}
+
+	// });
 });
 
+function getSetFeature(callback){
+	client.get('disableSET',function(err,value){
+		callback(value)
+	});
+}
 
 // HTTP SERVER
 var server = app.listen(3000, function () {
