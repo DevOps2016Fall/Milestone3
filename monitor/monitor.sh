@@ -19,8 +19,8 @@ do
         echo Proxy server has monitorred high traffic and a new app server is being auomatically provisioned
         node provision_server.js product
         sleep 10s
-        export ansible_host_key_checking=False
-        ansible-playbook  -e 'host_key_checking=False' -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
+        # export ansible_host_key_checking=False
+        # ansible-playbook  -e 'host_key_checking=False' -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
         cd ../monitor
         cd app
         node canary.js "yes"
