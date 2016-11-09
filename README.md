@@ -61,7 +61,7 @@ The proxy server has the ability to set feature flags. In this task, we have a f
 For this task, we have a staging server, which will be hosting a new version of app, can need to have a canary release. Our workflow is as follows:
 
 * The proxy server will redirect the traffic randomly to any product server at 70% probability and 30% to staging server.
-* We also monitor the proxy server as we did in Task3. If the CPU usage is greater than 50%, then all the traffic will go to product server, no traffic goes to staging server anymore.
+* We also monitor the proxy server as we did in Task3. If the CPU usage is greater than 50%, it will set "yes" to alert key in redis, then all the traffic will go to product server, no traffic goes to staging server anymore.
 
 
 
