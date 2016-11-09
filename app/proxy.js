@@ -33,7 +33,7 @@ var infrastructure =
     var proxy   = httpProxy.createProxyServer(options);
     var server  = http.createServer(function(req, res)
     {
-      
+
       if(req.url == "/destroy")
       {
         client.lpop("serversList",function(err, src){
@@ -51,10 +51,17 @@ var infrastructure =
       }
       if(req.url == "/")
       {
-        client.rpoplpush("productServersList", "productServersList", function(err, TARGET){
-        console.log("Proxy now pointing to server:" + TARGET);
+        if(Math.random()>0.7){
+          client.rpoplpush("stagingServersList","stagingServersList",function(err,TARGET){
+            console.log("Proxy now pointing to a staging server:" + TARGET)
+          });
+        }
+        else{
+          client.rpoplpush("productServersList", "productServersList", function(err, TARGET){
+            console.log("Proxy now pointing to a regular proudct server:" + TARGET);
+          });
+        }
         proxy.web( req, res, {target: TARGET } );
-        });
       }
       if(req.url == "/listservers")
       {
