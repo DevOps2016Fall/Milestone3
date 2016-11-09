@@ -75,7 +75,6 @@ var infrastructure =
         res.end(live_servers);
         });
       }
-      console.log(req.url)
       if(req.url == "/disableSET/0")
       {
         client.set("disableSET",0);
