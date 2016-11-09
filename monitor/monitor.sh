@@ -22,7 +22,8 @@ do
         export ansible_host_key_checking=False
         ansible-playbook  -e 'host_key_checking=False' -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
         cd ../monitor
+        cd app
+        node canary.js "yes"
     fi
     sleep 30s
 done
-
