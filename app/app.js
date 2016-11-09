@@ -73,7 +73,7 @@ app.get('/meow', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-  res.send("Hello world from product server:" + ip.address()+":"+PORT.toString()+"/");
+  res.send("Hello world from product server!:" + ip.address()+":"+PORT.toString()+"/");
 });
 
 app.get('/recent',function(req,res){
