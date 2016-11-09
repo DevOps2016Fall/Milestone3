@@ -17,12 +17,11 @@ do
     if [[ $cpu -gt 50 && $sysname == *"Weis-MacBook-Air.local"* ]]; then
         cd ../deployment
         echo Proxy server has monitorred high traffic and a new app server is being auomatically provisioned
-        node provision_server.js product
+        node provision_newProductServer.js product
         sleep 10s
         # export ansible_host_key_checking=False
         # ansible-playbook  -e 'host_key_checking=False' -i ~/proxy/Milestone3/deployment/inventory_product ~/proxy/Milestone3/deployment/product.yml
-        cd ../monitor
-        cd app
+        cd ../app
         node canary.js "yes"
     fi
     sleep 30s
