@@ -67,13 +67,25 @@ var infrastructure =
       }
       if(req.url == "/listservers")
       {
-        var live_servers="The following servers are available: \n";
+        var live_servers="The following proudct servers are available: \n";
         client.lrange('productServersList',0,-1,function(err,value){
         value.forEach(function(item){
         live_servers +="\n\t" +item.toString();});
         res.writeHead(200, {'Content-Type': 'text/plain'});
         res.end(live_servers);
         });
+      }
+      if(req.url == "/disableSET/0")
+      {
+        client.set("disableSET",0);
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end("SET feature on product servers is activated!  ");
+      }
+      if (req.url == "/disableSET/1")
+      {
+        client.set("disableSET",1);
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end("SET feature on product servers is disabled!  ");
       }
 
     });
