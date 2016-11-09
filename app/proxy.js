@@ -52,18 +52,29 @@ var infrastructure =
       }
       if(req.url == "/")
       {
-        if(Math.random()>0.7){
-          client.rpoplpush("stagingServersList","stagingServersList",function(err,TARGET){
-            console.log("Proxy now pointing to a staging server:" + TARGET);
-            proxy.web( req, res, {target: TARGET } );
-          });
-        }
-        else{
-          client.rpoplpush("productServersList", "productServersList", function(err, TARGET){
-            console.log("Proxy now pointing to a regular proudct server:" + TARGET);
-            proxy.web( req, res, {target: TARGET } );
-          });
-        }
+        getAlert(function(alert){
+          console.log(alert);
+          if(alert=="yes"){
+            client.rpoplpush("productServersList", "productServersList", function(err, TARGET){
+              console.log("Proxy now pointing to a regular proudct server:" + TARGET);
+              proxy.web( req, res, {target: TARGET } );
+            });
+          }
+          else{
+            if(Math.random()>0.7){
+              client.rpoplpush("stagingServersList","stagingServersList",function(err,TARGET){
+                console.log("Proxy now pointing to a staging server:" + TARGET);
+                proxy.web( req, res, {target: TARGET } );
+              });
+            }
+            else{
+              client.rpoplpush("productServersList", "productServersList", function(err, TARGET){
+                console.log("Proxy now pointing to a regular proudct server:" + TARGET);
+                proxy.web( req, res, {target: TARGET } );
+              });
+            }
+          }
+        });
       }
       if(req.url == "/listservers")
       {
@@ -90,19 +101,6 @@ var infrastructure =
 
     });
     server.listen(8081);
-
-    // exec('forever start main.js 4000', function(err, out, code)
-    // {
-    //   client.del("serversList");
-    //   client.lpush("serversList","http://localhost:4000/");
-    //   console.log("attempting to launch  4000 server");
-    //   if (err instanceof Error)
-    //         throw err;
-    //   if( err )
-    //   {
-    //     console.error( err );
-    //   }
-    // });
   },
 
   teardown: function()
@@ -116,7 +114,12 @@ var infrastructure =
 };
 
 infrastructure.setup();
+function getAlert(callback){
+  client.get("alert",function(err, value){
+    callback(value);
+  });
 
+}
 // Make sure to clean up.
 process.on('exit', function(){infrastructure.teardown();} );
 process.on('SIGINT', function(){infrastructure.teardown();} );
