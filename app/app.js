@@ -1,4 +1,5 @@
 var redis = require('redis');
+var path = require('path');
 var multer  = require('multer');
 var express = require('express');
 var fs      = require('fs');
@@ -7,8 +8,8 @@ var httpProxy = require('http-proxy');
 var ip = require('ip');
 var app = express();
 
-var redis_ip, redis_port
-var redis_info = fs.readFileSync('./redis_server.json');
+var redis_ip, redis_port;
+var redis_info = fs.readFileSync(path.resolve(__dirname, './redis_server.json'));
 try {
     redisServer = JSON.parse(redis_info);
     redis_ip = redisServer.redis_ip;
