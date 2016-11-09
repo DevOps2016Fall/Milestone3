@@ -109,18 +109,18 @@ setTimeout(function(){
   callCreate(client, function(serverName,publicIP){
 	  if(serverName == "redis"){
 	  	fs.writeFile('../app/redis_server.json','{\"redis_ip\":\"'+publicIP+'\", \"redis_port\":6379}');
-		  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/key/ssh\n');
+		  fs.appendFile('inventory', serverName+' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/Milestone3/key/ssh\n');
 		  run_ansible("inventory","redis.yml");
 	  }
 	  if(serverName == "product"){
 	  	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
-			fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/key/ssh\n');
-      run_ansible("inventory_product","product.yml");
+			fs.appendFile('inventory_product', publicIP +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/Milestone3/key/ssh\n');
+      run_ansible("~/Milestone3/deployment/inventory_product","~/Milestone3/deployment/product.yml");
 	  }
 	  if(serverName == "staging"){
 	  	redisClient.lpush("stagingServersList","http://"+publicIP+":3000/");
-		  fs.appendFile('inventory_product', serverName +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/key/ssh\n');
-      run_ansible("inventory_product","staging.yml");
+		  fs.appendFile('inventory', serverName +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/Milestone3/key/ssh\n');
+      run_ansible("~/Milestone3/deployment/inventory_product","~/Milestone3/deployment/staging.yml");
     }
   });
 },20000);
@@ -152,5 +152,9 @@ function run_ansible(inventory, playbook){
 
 	ls.on('exit', function (code) {
 	  console.log('child process exited with code ' + code.toString());
+    exec('forever stopall', function(){
+      console.log("infrastructure shutdown");
+      process.exit();
+    })
 	});
 }
