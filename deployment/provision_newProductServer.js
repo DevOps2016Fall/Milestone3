@@ -4,11 +4,11 @@ var redis = require('redis');
 var fs = require("fs");
 var exec = require('child_process').exec;
 var args = process.argv.slice(2);
-if(args.length == 0){
+if(args.length === 0){
   throw "Please pass serverName!";
 }
 
-var redis_ip, redis_port
+var redis_ip, redis_port;
 var redis_info = fs.readFileSync('../app/redis_server.json');
 try {
     redisServer = JSON.parse(redis_info);
@@ -22,7 +22,7 @@ catch (err) {
 
 var redisClient = redis.createClient(redis_port,redis_ip, {});
 
-var serverName = args[0]
+var serverName =args[0];
 var config = {};
 config.token = "a40b9e915e57df76e39a1eab52a4495e327f445d7d52a00c6e9a059ca0574466";// my own token
 
@@ -37,15 +37,15 @@ var client =
 {
 	getSSHKeyID:function(onResponse)
 	{
-		needle.get("https://api.digitalocean.com/v2/account/keys/4d:83:e3:c6:40:65:6b:04:b2:b9:58:89:6f:2c:e4:8a",{headers:headers},onResponse)
+		needle.get("https://api.digitalocean.com/v2/account/keys/4d:83:e3:c6:40:65:6b:04:b2:b9:58:89:6f:2c:e4:8a",{headers:headers},onResponse);
   },
 	retrieveDroplet:function(dropletId,onResponse)
 	{
-		needle.get("https://api.digitalocean.com/v2/droplets/"+dropletId, {headers:headers}, onResponse)
+		needle.get("https://api.digitalocean.com/v2/droplets/"+dropletId, {headers:headers}, onResponse);
 	},
 	createDroplet: function (dropletName, region, imageName, sshID,onResponse)
 	{
-		var data = 
+		var data =
 		{
 			"name": dropletName,
 			"region":region,
@@ -122,9 +122,9 @@ setTimeout(function(){
 		  exec('forever stopall', function(){
       	console.log("infrastructure shutdown");
       	process.exit();
-    	})
+    	});
 		});
-	})},38000);
+	});},38000);
 
 
 function callPostCreate(client, callback){
@@ -132,13 +132,9 @@ function callPostCreate(client, callback){
 	var data = response.body;
   var publicIP = data.droplet.networks.v4[0].ip_address;
   console.log("DigitalOcean PublicIP: "+ publicIP);
-  fs.writeFile('inventory_product','[product]\n')
+  fs.writeFile('inventory_product','[product]\n');
 	fs.appendFile('inventory_product', publicIP+ ' ansible_ssh_host='+publicIP+' ansible_ssh_user=root ansible_host_key_checking=False ansible_ssh_private_key_file=/root/Milestone3/key/ssh\n');
   console.log("A new product server is provisioned: done!");
-  callback(serverName, publicIP)
+  callback(serverName, publicIP);
   });
 }
-
-
-
-
