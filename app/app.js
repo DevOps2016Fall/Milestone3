@@ -73,7 +73,7 @@ app.get('/meow', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-  res.send("Hello world from product server..test!:" + ip.address()+":"+PORT.toString()+"/");
+  res.send("Hello world from product server!This is Wei!haha :" + ip.address()+":"+PORT.toString()+"/");
 });
 
 app.get('/recent',function(req,res){
@@ -123,7 +123,7 @@ app.get('/set',function(req,res){
 
 function getSetFeature(callback){
 	client.get('disableSET',function(err,value){
-		callback(value)
+		callback(value);
 	});
 }
 
