@@ -5,7 +5,7 @@ var fs = require("fs");
 var exec = require('child_process').exec;
 var args = process.argv.slice(2);
 var serverName = args[0];
-if(args.length == 0){
+if(args.length === 0){
   throw "Please pass serverName!";
 }
 if(serverName!="redis"){
@@ -57,7 +57,6 @@ var client ={
 		needle.post("https://api.digitalocean.com/v2/droplets", data, {headers:headers,json:true}, onResponse );
 	}
 };
-
 
 // #############################################
 // #3 Create an droplet with the specified name, region, and image
