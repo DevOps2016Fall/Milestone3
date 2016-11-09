@@ -8,10 +8,10 @@ do
 
     if [ $cpu -gt 50 ]; then
         echo The CPU usage is high. $cpu%  | mail -s "High CPU usage for $sysname at ip $ip" wfu@ncsu.edu
-        cd ../app
-        node canary.js "yes"
+        # cd ../app
+        # node canary.js "yes"
     fi
-    cd ../monitor
+    # cd ../monitor
     mem=$(python memory.py)
     echo $mem
     if [ $mem -gt 50 ]; then
