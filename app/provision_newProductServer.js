@@ -2,11 +2,11 @@ var needle = require("needle");
 var os   = require("os");
 var fs = require("fs");
 var args = process.argv.slice(2);
-if(args.length == 0){
+if(args.length === 0){
   throw "Please pass serverName!";
 }
 
-var redis_ip, redis_port
+var redis_ip, redis_port;
 var redis_info = fs.readFileSync('../app/redis_server.json');
 try {
     redisServer = JSON.parse(redis_info);
@@ -20,7 +20,7 @@ catch (err) {
 
 var redisClient = redis.createClient(redis_port,redis_ip, {});
 
-var serverName = args[0]
+var serverName = args[0];
 var config = {};
 config.token = "a40b9e915e57df76e39a1eab52a4495e327f445d7d52a00c6e9a059ca0574466";// my own token
 
@@ -37,15 +37,15 @@ var client =
 {
 	getSSHKeyID:function(onResponse)
 	{
-		needle.get("https://api.digitalocean.com/v2/account/keys/4d:83:e3:c6:40:65:6b:04:b2:b9:58:89:6f:2c:e4:8a",{headers:headers},onResponse)
+		needle.get("https://api.digitalocean.com/v2/account/keys/4d:83:e3:c6:40:65:6b:04:b2:b9:58:89:6f:2c:e4:8a",{headers:headers},onResponse);
   },
 	retrieveDroplet:function(dropletId,onResponse)
 	{
-		needle.get("https://api.digitalocean.com/v2/droplets/"+dropletId, {headers:headers}, onResponse)
+		needle.get("https://api.digitalocean.com/v2/droplets/"+dropletId, {headers:headers}, onResponse);
 	},
 	createDroplet: function (dropletName, region, imageName, sshID,onResponse)
 	{
-		var data = 
+		var data =
 		{
 			"name": dropletName,
 			"region":region,
@@ -113,7 +113,3 @@ setTimeout(function(){
   	redisClient.lpush("productServersList","http://"+publicIP+":3000/");
   }
 },20000);
-
-
-
-
