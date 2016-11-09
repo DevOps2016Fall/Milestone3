@@ -121,10 +121,10 @@ setTimeout(function(){
 	  if(serverName == "staging"){
 	  	redisClient.lpush("stagingServersList","http://"+publicIP+":3000/");
 		  fs.appendFile('inventory', serverName +' ansible_ssh_host='+publicIP+' ansible_ssh_user=root  ansible_host_key_checking=False ansible_ssh_private_key_file=~/Milestone3/key/ssh\n');
-      run_ansible("/Users/WeiFu/Milestone3/deployment/inventory_product","/Users/WeiFu/Milestone3/deployment/staging.yml");
+      run_ansible("/Users/WeiFu/Milestone3/deployment/inventory","/Users/WeiFu/Milestone3/deployment/staging.yml");
     }
   });
-},20000);
+},38000);
 
 function callCreate(client, callback){
 	client.retrieveDroplet(dropletId,function(err, response){
