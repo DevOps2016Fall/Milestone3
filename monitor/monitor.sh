@@ -16,8 +16,8 @@ do
     echo $mem
     if [ $mem -gt 50 ]; then
         echo The Memory usage is high. $mem% | mail -s "High memory usage for $sysname at ip $ip" wfu@ncsu.edu
-        cd ../app
-        node canary.js "yes"
+        # cd ../app
+        # node canary.js "yes"
     fi
     if [[ $cpu -gt 70 && $sysname == *"Weis-MacBook-Air.local"* ]]; then
         cd ../deployment
