@@ -1,0 +1,12 @@
+---
+- hosts: product
+  become: yes
+  vars_files:
+    - var.yml
+
+  tasks:
+
+  - name: Pull new commits
+    # command: git pull origin master
+    # when: m3_repo_exist.stat.exists == True
+    synchronize: src=~/Milestone3/app dest=~/Milestone3/app
