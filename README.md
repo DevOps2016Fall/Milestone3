@@ -10,16 +10,17 @@ In this mileston, we're using DigitalOcean as our cloud provider to deploy our s
 
 We reuse the [hw1 code](https://github.com/DevOps2016Fall/Milestone3/blob/master/deployment/provision_server.js) to automatically create digital ocean droplet for our different servers. 
 
+__[YOUTUBE DEMO!!!](https://youtu.be/PUj8E83yml4)__
 
 
-## Task 1: Deploy software to production envronsment
+## Task 1: Deploy software to production envronsment [YOUTUBE DEMO!!!](https://youtu.be/-Gk_oWftz_8)
 * We create a git [pre-commit](https://github.com/DevOps2016Fall/Milestone3/blob/master/pre-commit.sh) hook to do testing and analysis. If pass, then continue to commit; otherwise, this commit will be rejected. 
 * Specifically, we use Jhint to do analysis and mocha, chai to do express server unit test.
 * Our simple unit test script is [here](https://github.com/DevOps2016Fall/Milestone3/blob/master/test/test.js)
 * We create a [pre-push](https://github.com/DevOps2016Fall/Milestone3/blob/master/pre-push.sh) hook, which will call ansible to deploy the software into product server automatically.
 
 
-## Task 2: Automatic configuration of remote servers.
+## Task 2: Automatic configuration of remote servers.[YOUTUBE DEMO!!!](https://youtu.be/_HA2EZ6wAVY)
 We create four different ansible playbooks for different servers, e.g.[proxy.yml](https://github.com/DevOps2016Fall/Milestone3/blob/master/deployment/proxy.yml),[product.yml](https://github.com/DevOps2016Fall/Milestone3/blob/master/deployment/product.yml),[redis.yml](https://github.com/DevOps2016Fall/Milestone3/blob/master/deployment/redis.yml),[staging.yml](https://github.com/DevOps2016Fall/Milestone3/blob/master/deployment/staging.yml). Each time, we push any new stuff into different servers, we will call different playbook to configure the corresponding servers.
 The main functionality of playbooks are listed below, which could be a minor different between those fours.
 
@@ -29,7 +30,7 @@ The main functionality of playbooks are listed below, which could be a minor dif
    * Staging server: will pull codes from staging branch
 * Start the corresponding service, like node.
 
-## Task3:  Monitor the deployed application
+## Task3:  Monitor the deployed application[YOUTUBE DEMO!!!](https://youtu.be/_9QCbOxNAOE)
 
 We create python [scripts](https://github.com/DevOps2016Fall/Milestone3/tree/master/monitor) to monitor the servers(proxy, prouduct..), which will run at background. 
 
@@ -37,7 +38,7 @@ We create python [scripts](https://github.com/DevOps2016Fall/Milestone3/tree/mas
 * We configure our server to be able to sent email by the [instruction](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-14-04) provided by Digital Ocean.
 * When CPU usage is greater than 50% or memory is greater than 50%, an alert email will be sent to my eamil box.
 
-## Task4: Autoscale individual components of production
+## Task4: Autoscale individual components of production[YOUTUBE DEMO!!!](https://youtu.be/_9QCbOxNAOE)
 
 We create another js script [provision_newProductServer.js](https://github.com/DevOps2016Fall/Milestone3/blob/master/deployment/provision_newProductServer.js), which will be able to creat a Digital Ocean droplet automatically if triggered. We design out workflow is as followed:
 
@@ -46,7 +47,7 @@ We create another js script [provision_newProductServer.js](https://github.com/D
 * After that, an ansible playbook will come in to work, to automatically configure the newly created product server.
 * The ip of this new product server will be udpated in the redis server, which join the other product servers to provide service.
 
-## Task5: Use feature flags
+## Task5: Use feature flags[YOUTUBE DEMO!!!](https://youtu.be/zTryERtgbJM)
 
 The proxy server has the ability to set feature flags. In this task, we have a feature called ```disableSET```, which will disable the __SET__ key functionality. The workflow is as follows:
 
@@ -56,7 +57,7 @@ The proxy server has the ability to set feature flags. In this task, we have a f
 * When a user visit, for exmaple: 162.243.59.161\Set, the product server will check ```disableSET``` value in redis server
 * if its value is 1 then, such the user can't use SET feature, or it's avaiable.
 
-## Task6: Perform a canary release
+## Task6: Perform a canary release[YOUTUBE DEMO!!!](https://youtu.be/U5NZvUCRda0)
 
 For this task, we have a staging server, which will be hosting a new version of app, can need to have a canary release. Our workflow is as follows:
 
