@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var redis = require('redis');
 var redis_ip, redis_port;
-var redis_info = fs.readFileSync('/root/Milestone3/app/redis_server.json'));
+var redis_info = fs.readFileSync('/root/Milestone3/app/redis_server.json');
 try {
     redisServer = JSON.parse(redis_info);
     redis_ip = redisServer.redis_ip;
